@@ -9,17 +9,17 @@
 (function ($) {
 
   "use strict";
-  var Typewritter = function(el, options){
+  var jtap = function(el, options){
 
     // chosen element to manipulate text
     this.el = $(el);
 
     // options
-    this.options = $.extend({}, $.fn.typewritter.defaults, options);
+    this.options = $.extend({}, $.fn.jtap.defaults, options);
 
     console.log(this.options);
 
-    this.content;
+    this.content = nul;
 
     this.isInput = false;
 
@@ -35,9 +35,9 @@
 
     this.init();
 
-  }
+  };
 
-  Typewritter.prototype = {
+  jtap.prototype = {
 
     init: function()
     {
@@ -58,10 +58,10 @@
         this.el.empty();
       }
 
-      this.el.addClass('typewritter').addClass('tw-idle');
+      this.el.addClass('jtap').addClass('jtap-idle');
       if( this.options.cursor === true )
       {
-        this.el.addClass('tw-cursor');
+        this.el.addClass('jtap-cursor');
       }
 
       if( this.options.skipTags === true )
@@ -132,8 +132,12 @@
 
     start: function()
     {
-      this.el.removeClass('tw-idle');
-      this.options.onStart();
+      this.isPaused = false;
+      this.el.removeClass('jtap-idle');
+      if( this.options.onStart )
+      {
+        this.options.onStart();
+      }
       this.prepare();
       this.type();
     },
@@ -153,7 +157,7 @@
       var stop = false;
       this.backspaceIndexes.forEach( function(arr, idx){
         // console.log('type', arr[1], self.index);
-        if( arr[1] == self.index - 2 )
+        if( arr[1] === self.index - 2 )
         {
           self.clearTimer();
           self.delete();
@@ -204,7 +208,7 @@
         return;
       }
 
-      var self = this;
+     
       
       this.timer = setTimeout(function(){self.type();}, this.humanize(this.options.speed));
       
@@ -277,7 +281,7 @@
       this.el.removeAttr('style');
       if( this.options.onComplete )
       {
-        this.el.addClass('tw-idle');
+        this.el.addClass('jtap-idle');
         this.options.onComplete();
       }
     },
@@ -287,7 +291,7 @@
       console.log('pause', this.timer);
       this.isPaused = true;
       clearTimeout(this.timer);
-      this.el.addClass('tw-idle');
+      this.el.addClass('jtap-idle');
 
       if( typeof miliseconds !== 'undefined' )
       {
@@ -302,22 +306,34 @@
     resume: function()
     {
       this.isPaused = false;
-      this.el.removeClass('tw-idle');
+      this.el.removeClass('jtap-idle');
       this.type();
+    },
+
+    reset: function( startDelay ){
+      this.timer = null;
+      this.index = 0;
+
+      if( !startDelay ){
+        startDelay = this.options.startDelay;
+      }
+      this.pause();
+      var self = this;
+      setTimeout( function(){self.start();}, startDelay );
     }
 
   }
 
 
 
-  $.fn.typewritter = function( option, value )
+  $.fn.jtap = function( option, value )
   {
     return this.each(function() {
 
       var $this = $(this),
           data = $this.data('typed'),
           options = typeof option == 'object' && option;
-      if (!data) $this.data('typed', (data = new Typewritter(this, options)));
+      if (!data) $this.data('typed', (data = new jtap(this, options)));
       if (typeof option == 'string'){
         if( typeof value !== 'undefined' && data.options.hasOwnProperty(option) )
         {
@@ -332,14 +348,13 @@
     });
   }
 
-  $.fn.typewritter.defaults = {
+  $.fn.jtap.defaults = {
     cursor: true,
-    text: null,
     startDelay: 0,
     speed: 50,
     backspaceSpeed: 200,
-    humanize: false,
-    skipTags: false,
+    humanize: true,
+    skipTags: true,
     onStart: null,
     onTypeBefore: null,
     onTypeAfter: null,
@@ -349,175 +364,4 @@
 
 }(jQuery));
 
-(function ($) {
-  'use strict';
-  $.fn.typewritter22 = function ( options ) {
 
-    var defaults = {
-      cursor: true,
-      text: null,
-      startDelay: 0,
-      speed: 50,
-      skipTags: false,
-      onStart: null,
-      onTyping: null,
-      onComplete: null
-    };
-
-    var settings = $.extend( {}, defaults, options );
-
-    return this.each(function (idx) {
-      // Do something to each selected element.
-
-
-      var $elem = $(this);
-
-      if( $elem.prop("tagName") !== 'INPUT' ){
-      
-        var sizes = [];
-        console.log($elem.css('box-sizing'));
-        switch( $elem.css('box-sizing') )
-        {
-        	// case 'padding-box':
-        	// 	sizes = [ $(this).innerWidth(), $(this).innerHeight() ];
-        	// 	console.log('padding-box');
-        	// break;
-
-        	// case 'border-box':
-        	// 	sizes = [ $(this).outerWidth(), $(this).outerHeight() ];
-        	// 	console.log('border-box');
-        	// break;
-
-        	default:
-        		sizes = [ $elem.width(), $elem.height() ];
-        		console.log('content-box');
-
-        }
-
-        
-
-        $elem.width(sizes[0]);
-        $elem.height(sizes[1]);
-      }
-      $elem.addClass('typewritter').addClass('tw-idle');
-      if( settings.cursor === true )
-      {
-        $elem.addClass('tw-cursor');
-      }
-
-
-
-      var str,
-      i = 0,
-      isTag;
-
-      if( $elem.prop("tagName") === 'INPUT' ){
-        str = $elem.val();
-        $elem.val(''); 
-        $elem.focus();
-      }
-      else
-      {
-        str = $elem.html();
-        $elem.empty();  
-      }
-      
-      
-      if( settings.skipTags === true )
-      {
-        str = str.replace(/(<([^>]+)>)/ig,"");
-      }
-
-      console.log('str', str);
-
-      function start(){
-        // rozpoczyna pisanie
-      }
-
-      function pause()
-      {
-        // zatrzymuje pisanie w dowolnym momencie
-      }
-
-      function resume()
-      {
-        // wznawia pisanie po pauzie
-      }
-
-      function reset()
-      {
-        // zaczyna pisanie od nowa
-      }
-
-      function disable()
-      {
-        // wyłacza plugin - przywraca element DOM do stanu początkowego.
-      }
-
-      function backspace()
-      {
-        // pozwala kasować słowa
-      }
-
-
-		  function type(){
-
-        if( i === 0 && settings.onStart )
-        {
-
-          $elem.removeClass('tw-idle');
-          settings.onStart();
-        }
-	    	
-        var text = str.slice(0, ++i);
-
-
-        if( settings.onTyping )
-        {
-          settings.onTyping(i-1, text.slice(-1), text);
-        }
-        if( $elem.prop("tagName") === 'INPUT' ){
-          $elem.val( text );
-        }
-        else
-        {
-          $elem.empty().html( text );
-        }
-
-        var char = text.slice(-1);
-        if( char === '<' ) 
-        {
-          isTag = true;
-        }
-        if( char === '>' )
-        {
-          isTag = false;  
-        } 
-
-        if (isTag) 
-        {
-          return type();
-        }
-
-        if (text === str) {
-          $elem.removeAttr('style');
-          if( settings.onComplete )
-          {
-            $elem.addClass('tw-idle');
-            settings.onComplete();
-          }
-          return;
-        }
-
-        setTimeout(type, settings.speed);
-	        
-		  };
-
-      setTimeout(type, settings.startDelay);
-
-
-
-
-    });
-  };
-}(jQuery));

@@ -1,5 +1,5 @@
 {
-  "name": "Typewritter",
+  "name": "jQueryTypingAnimationPlugin",
   "version": "0.0.1",
   "description": "jQuery typing animation plugin",
   "keywords": [
@@ -10,7 +10,7 @@
     "email": "hello@michalbarys.pl",
     "url": "https://github.com/michaelbarys"
   },
-  "repository": "michaelbarys/typewritter",
+  "repository": "https://github.com/michaelbarys/jquery-typing-animation-plugin",
   "license": "MIT",
   "scripts": {
     "test": "grunt"

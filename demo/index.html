@@ -6,6 +6,8 @@
 
 	<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
+
 
 	<style>
 
@@ -35,21 +37,21 @@
 				color: red;
 			}
 
-		.typewritter{
+		.jtap{
 			-webkit-transform: translateZ(0);
 		   -moz-transform: translateZ(0);
 		   -ms-transform: translateZ(0);
 		   -o-transform: translateZ(0);
 		   transform: translateZ(0);
 		}
-		.typewritter.tw-cursor:after{
+		.jtap.jtap-cursor:after{
 			  content: "|";
 			  font-weight: 100;
 			  display: inline-block;
 			  opacity: 1;
 			}
 
-			.typewritter.tw-cursor.tw-idle:after{
+			.jtap.jtap-cursor.jtap-idle:after{
 				-moz-animation: blink 1.1s steps(5, start) infinite;
 			  -webkit-animation: blink 1.1s steps(5, start) infinite;
 			  animation: blink 1.1s steps(5, start) infinite;
@@ -71,27 +73,146 @@
 			  }
 			}
 
+			.overlay{
+				font-size: 20px;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: rgba(0,0,0,.8);
+				color: #f7de51;
+				text-align: center;
+				padding-top: 30px;
+				cursor: pointer;
+			}
+
+			.overlay span{
+				-moz-animation: blink2 1.1s steps(5, start) infinite;
+			  -webkit-animation: blink2 1.1s steps(5, start) infinite;
+			  animation: blink2 1.1s steps(5, start) infinite;
+			  text-shadow: -1px -1px 0 #000,  1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+			 
+			}
+
+			@-moz-keyframes blink2 {
+			  to {
+			    visibility: hidden;
+			  }
+			}
+			@-webkit-keyframes blink2 {
+			  to {
+			    visibility: hidden;
+			  }
+			}
+			@keyframes blink2 {
+			  to {
+			    visibility: hidden;
+			  }
+			}
+
+
 	</style>
+			}
 </head>
 <body>
 
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12">
-				<h1>Hello wor{d}ld! ;)<br /><small>this is second line</small></h1>
+				<h1>jQuery typing animation plugin</h1>
 			</div>
 		</div>
 	
 		<div class="row">
-			<div class="col-xs-12">
-					<p>Leciała {pszczoła}mucha z Łodzi do Zgierza,<br />
+		<div class="col-xs-12">
+					<h2>Demo</h2>
+					<p class="demo">Leciała {pszczoła}mucha z Łodzi do Zgierza,<br />
 					Po drodze patrzy: strażacka wieża,<br />
 					Na wieży strażak zasnął i chrapie,<br />
-					W dole pod wieżą gapią się {ludzie}gapie.</p>
+					W dole pod wieżą gapią się {lud}gapie.</p>
+			</div>
+			<div class="col-xs-12">
+				<h2>Source code</h2>
+				<h3>HTML:</h3>
+				<pre><code class="lang-html">&lt;p class="demo"&gt;Leciała {pszczoła}mucha z Łodzi do Zgierza,&lt;br /&gt;
+Po drodze patrzy: strażacka wieża,&lt;br /&gt;
+Na wieży strażak zasnął i chrapie,&lt;br /&gt;
+W dole pod wieżą gapią się {ludzie}gapie.&lt;/p&gt;</code></pre>
+			<h3>JavaScript:</h3>
+			<pre><code class="lang-js">
+				$('p.demo').jtap({
+					string: [["Ala ma kota"], "a kot ma alę"],
+					startDelay: 0,
+					cursor: true,
+					speed: 20, 
+					backspaceSpeed: 50,
+					humanize: true,
+					skipTags: false,
+					onStart: function(){
+						// do something before start typing
+						console.log('Start typing');
+					},
+					onTypeBefore: function( idx, char, text ){ 
+						// do something before type char
+						// when idx is index of this char
+
+						if( idx === 5 )
+						{
+							$('p.demo').jtap('pause');
+							console.log( idx, char, text );
+						} 
+					},
+
+					onTypeAfter: function( idx, char, text )
+					{
+						if( idx === 5 )
+						{
+							$('p.demo').jtap('pause');
+							console.log('paused for 5 seconds');
+							setTimeout( function(){$('p.demo').jtap('resume')}, 5000 );
+							console.log( idx, char, text );
+						}
+					},
+
+					onComplete: function(){
+						// do something after typing is complete
+						console.log('Typing complete');
+					}
+				});
+			</code></pre>
+			</div>
+			<div class="col-xs-12">
+			<h2>Options</h2>
+			<h3>Config</h3>
+			<ul>
+				<li><samp>startDelay</samp> - delay in miliseonds (default: 0)</li>
+				<li><samp>cursor</samp> - boolean true or false (default: true)</li>
+				<li><samp>speed</samp> - typing speed ratio (default: 50)</li>
+				<li><samp>backspaceSpeed</samp> - erasing speed ratio (default: 200)</li>
+				<li><samp>humanize</samp> - randomize speed of typing single char (default: true)</li>
+				<li><samp>skipTags</samp> - skip HTML tags (default: true)</li>
+			</ul>
+			<h3>Callbacks</h3>
+			<ul>
+				<li><samp>onStart</samp> - triggered before startying typing</li>
+				<li><samp>onTypeBefore</samp> - triggered before type char</li>
+				<li><samp>onTypeAfter</samp> - triggered after char is typed</li>
+				<li><samp>onComplete</samp> - triggered when typing is end</li>
+			</ul>
+
+			<h3>Methods</h3>
+			<ul>
+				<li><code>.jtap('pause', <var>[optional pause time in miliseconds]</var>)</code> - if you not set <code><var>optional pause time</var></code>, then you must use <code>.jtap('resume')</code>, to resume typing.</li>
+				<li><code>.jtap('resume')</code> - resume typing after pause.</li>
+				<li><code>.jtap('reset', <var>[optional startDelay]</var>)</code> - reset typing and start again</li>
+			</ul>
+			
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-xs-12">
+				<h2>More examples</h2>
 				<form action="#">
 					<div class="form-group">
 						<input type="text" class="form-control" value="Ala ma kota a kot ma alę" />
@@ -105,15 +226,19 @@
 	</div>
 
 	
-
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
 	<script src="../bower_components/jquery/dist/jquery.js"></script>
-	<script src="../src/typewritter.js"></script>
+	<script src="../src/jtap.js"></script>
 	<script src="tests.js"></script>
 	<script>
+	hljs.configure({
+		tabReplace: '   '
+	});
+	hljs.initHighlightingOnLoad();
 	//$('h1').jQueryTypingAnimationPlugin({speed: 80});
-	$('p').typewritter({
-				string: [["Ala ma kota"], "a kot ma alę"],
-				startDelay: 0,
+	// $('.form-control').jtap();
+	$('p.demo').jtap({
+				startDelay: 1000,
 				cursor: true,
 				speed: 20, 
 				backspaceSpeed: 50,
@@ -125,8 +250,11 @@
 				onTypeBefore: function( idx, char, text ){ 
 					if( idx === 5 )
 					{
-						//$('p').typewritter('pause');
-						// console.log( idx, char, text );
+						console.log('------------------------');
+						console.log('onTypeBefore');
+						//$('p.demo').jtap('pause', 5000); // pause for 5 sec
+						console.log('typing is paused for 5 seconds');
+						console.log( idx, char, text );
 					} 
 				},
 
@@ -134,9 +262,19 @@
 				{
 					if( idx === 5 )
 					{
-						//$('p').typewritter('pause');
-						//$('p').typewritter('pause');
-						//console.log( idx, char, text );
+						console.log('------------------------');
+						console.log('onTypeAfter');
+						$('p.demo').jtap('pause');
+						$('p.demo').append('<div class="overlay"><span>PAUSED<br />Click to resume</span></div>');
+						
+						console.log('paused for 5 seconds, but we use .resume()');
+						//setTimeout( function(){$('p.demo').jtap('resume')}, 5000 );
+						console.log( idx, char, text );
+					}
+
+					if( idx === 50 )
+					{
+						$('p.demo').jtap('reset', 2000);
 					}
 				},
 
@@ -145,26 +283,16 @@
 				}
 			});
 
-	$('p').on('click', function(){
-		//$(this).typewritter('resume');
-	});
+		$(document).on('click', 'p.demo', function(){
+			$('p.demo').jtap('pause');
+			$('p.demo').append('<div class="overlay"><span>PAUSED<br />Click to resume</span></div>');
+		});
 
-	// $('h1').jQueryTypingAnimationPlugin({
-	// 	startDelay: 1000,
-	// 	speed: 100, 
-	// 	skipTags: false,
-	// 	onStart: function(){
-	// 		console.log('start typing');
-	// 	},
-	// 	onTyping: function( idx, char, text ){ 
-	// 		//console.log( 'on index ' + idx + ' is letter "' + char + '", current text: "'+text+'"' ); 
-	// 	},
-	// 	onComplete: function(){
-	// 		console.log('Typing complete');
-
-			
-	// 	}
-	// });
+		$(document).on('click', 'div.overlay', function(e){
+			e.stopPropagation();
+			$(this).remove();
+			$('p.demo').jtap('resume');
+		});
 
 	</script>
 </body>

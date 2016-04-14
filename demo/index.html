@@ -140,47 +140,45 @@ Po drodze patrzy: strażacka wieża,&lt;br /&gt;
 Na wieży strażak zasnął i chrapie,&lt;br /&gt;
 W dole pod wieżą gapią się {ludzie}gapie.&lt;/p&gt;</code></pre>
 			<h3>JavaScript:</h3>
-			<pre><code class="lang-js">
-				$('p.demo').jtap({
-					string: [["Ala ma kota"], "a kot ma alę"],
-					startDelay: 0,
-					cursor: true,
-					speed: 20, 
-					backspaceSpeed: 50,
-					humanize: true,
-					skipTags: false,
-					onStart: function(){
-						// do something before start typing
-						console.log('Start typing');
-					},
-					onTypeBefore: function( idx, char, text ){ 
-						// do something before type char
-						// when idx is index of this char
+			<pre><code class="lang-js">$('p.demo').jtap({
+	string: [["Ala ma kota"], "a kot ma alę"],
+	startDelay: 0,
+	cursor: true,
+	speed: 20, 
+	backspaceSpeed: 50,
+	humanize: true,
+	skipTags: false,
+	onStart: function(){
+		// do something before start typing
+		console.log('Start typing');
+	},
+	onTypeBefore: function( idx, char, text ){ 
+		// do something before type char
+		// when idx is index of this char
 
-						if( idx === 5 )
-						{
-							$('p.demo').jtap('pause');
-							console.log( idx, char, text );
-						} 
-					},
+		if( idx === 5 )
+		{
+			$('p.demo').jtap('pause');
+			console.log( idx, char, text );
+		} 
+	},
 
-					onTypeAfter: function( idx, char, text )
-					{
-						if( idx === 5 )
-						{
-							$('p.demo').jtap('pause');
-							console.log('paused for 5 seconds');
-							setTimeout( function(){$('p.demo').jtap('resume')}, 5000 );
-							console.log( idx, char, text );
-						}
-					},
+	onTypeAfter: function( idx, char, text )
+	{
+		if( idx === 5 )
+		{
+			$('p.demo').jtap('pause');
+			console.log('paused for 5 seconds');
+			setTimeout( function(){$('p.demo').jtap('resume')}, 5000 );
+			console.log( idx, char, text );
+		}
+	},
 
-					onComplete: function(){
-						// do something after typing is complete
-						console.log('Typing complete');
-					}
-				});
-			</code></pre>
+	onComplete: function(){
+		// do something after typing is complete
+		console.log('Typing complete');
+	}
+});</code></pre>
 			</div>
 			<div class="col-xs-12">
 			<h2>Options</h2>
@@ -228,7 +226,7 @@ W dole pod wieżą gapią się {ludzie}gapie.&lt;/p&gt;</code></pre>
 	
 	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
 	<script src="../bower_components/jquery/dist/jquery.js"></script>
-	<script src="../src/jtap.js"></script>
+	<script src="../dist/jquery.jtap.min.js"></script>
 	<script src="tests.js"></script>
 	<script>
 	hljs.configure({

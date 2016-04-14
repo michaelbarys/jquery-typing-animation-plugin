@@ -19,7 +19,7 @@
 
     console.log(this.options);
 
-    this.content = nul;
+    this.content = null;
 
     this.isInput = false;
 
@@ -333,7 +333,9 @@
       var $this = $(this),
           data = $this.data('typed'),
           options = typeof option == 'object' && option;
-      if (!data) $this.data('typed', (data = new jtap(this, options)));
+      if (!data) {
+        $this.data('typed', (data = new jtap(this, options)));
+      }
       if (typeof option == 'string'){
         if( typeof value !== 'undefined' && data.options.hasOwnProperty(option) )
         {
